@@ -12,7 +12,7 @@ The following programs are included:
 Other programs in the package can be used to generate lookup tables and summarise the output of analyses. 
 Programs are run from the command line. 
 A [pdf manual](manual.pdf) containing information about installing, running and interpreting results from the package should be read before proceeding. 
-An [example data set](Example) - LPL sequences from a Finnish population (Nickerson <i>et al</i>., 1998) - is included in the package.
+An [example data set](Example) - LPL sequences from a Finnish population ([Nickerson <i>et al</i>., 1998](http://www.ncbi.nlm.nih.gov/pubmed/9662394)) - is included in the package.
 
 Installation
 ------------
@@ -23,10 +23,10 @@ Likelihood Lookup Tables
 ------------------------
 
 A number of precomputed likelihood lookup tables are available for [download](lk_files). 
-Using these tables in conjunction with lkgen will speed up analyses considerably, as the calculation of 2-locus coalescent likelihoods is the most computationally intesive aspect of the core LDhat algorithms. 
+Using these tables in conjunction with <b>lkgen</b> will speed up analyses considerably, as the calculation of 2-locus coalescent likelihoods is the most computationally intesive aspect of the core LDhat algorithms. 
 These tables all use the same grid for 4Ner (rho), 101 points evenly spaced between 0 and 100. 
 They differ only in the number of sequences (n) and the value of population mutation rate parameter (theta). 
-Note that lkgen can be used to generated lookup tables from these for smaller numbers of chromosomes, and that minor differences in theta do not appear to strongly influence the results. 
+Note that <b>lkgen</b> can be used to generated lookup tables from these for smaller numbers of chromosomes, and that minor differences in theta do not appear to strongly influence the results. 
 <br><br>
 All of the likelihood lookup files are gzip compressed, and should be decompressed before use.
 <br>
