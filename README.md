@@ -24,7 +24,7 @@ Likelihood Lookup Tables
 
 A number of precomputed likelihood lookup tables are available for [download](lk_files). 
 Using these tables in conjunction with <b>lkgen</b> will speed up analyses considerably, as the calculation of 2-locus coalescent likelihoods is the most computationally intesive aspect of the core LDhat algorithms. 
-These tables all use the same grid for 4Ner (rho), 101 points evenly spaced between 0 and 100. 
+These tables all use the same grid for 4N<sub>e</sub>r (rho), 101 points evenly spaced between 0 and 100. 
 They differ only in the number of sequences (n) and the value of population mutation rate parameter (theta). 
 Note that <b>lkgen</b> can be used to generated lookup tables from these for smaller numbers of chromosomes, and that minor differences in theta do not appear to strongly influence the results. 
 <br><br>
