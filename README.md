@@ -11,7 +11,7 @@ The following programs are included:
 
 Other programs in the package can be used to generate lookup tables and summarise the output of analyses. 
 Programs are run from the command line. 
-A [pdf manual](manual.pdf) containing information about installing, running and interpreting results from the package should be read before proceeding. 
+A [PDF manual](manual.pdf) containing information about installing, running and interpreting results from the package should be read before proceeding. 
 An [example data set](Example) - LPL sequences from a Finnish population ([Nickerson <i>et al</i>., 1998](http://www.ncbi.nlm.nih.gov/pubmed/9662394)) - is included in the package.
 
 Installation
