@@ -13,7 +13,7 @@ main (int argc, char *argv[]) {
 	int nseq, nmin, lseq, fl=1, na, psite;
 
 	long seed = -setseed();
-	double fcut=0.0, pwd, sn, ns, ctaj[12], n, d, spwd[2], tlseq, *sloc, fgap=1.0;
+	double fcut=0.0, pwd, sn, ns, ctaj[12], n, d, spwd[2], tlseq, *sloc, fgap=1.0, unit=1.0;
 	char fname[MAXNAME+1], bases[6]="0?TCAG", sc[6]="0?0120", c, **seqnames;
 	char prefix[MAXNAME+1];
 
@@ -50,6 +50,7 @@ main (int argc, char *argv[]) {
 			if(strcmp(in_str, "-nout") == 0) nout = atoi(argv[i+1]);
 			if(strcmp(in_str, "-2only") == 0) fl=2;
 			if(strcmp(in_str, "-prefix") == 0) strcpy(prefix, argv[i+1]);
+			if(strcmp(in_str, "-unit") == 0) unit = atoi(argv[i+1]);
 		}
 	}
 	if (ifp == NULL)
@@ -187,7 +188,7 @@ main (int argc, char *argv[]) {
 	
 	if (psite==0) {printf("\n\nNo data to output\n\n"); exit(1);}
 	fprintf(ofp,"%i %i %i",nout,psite,hd);
-	fprintf(loc,"%i %.3f %c", psite, (inloc ? sloc[u]/*-sloc[l]+2*/ : (double) u-l+1), (inloc ? c : 'L'));
+	fprintf(loc,"%i %.3f %c", psite, (inloc ? sloc[u]/*-sloc[l]+2*/ : (double) u-l+1) / unit, (inloc ? c : 'L'));
 
 	for (i=1;i<=nseq;i++) if (seq_out_list[i]) 
 	{
@@ -204,7 +205,7 @@ main (int argc, char *argv[]) {
 		}
 	}
 	fclose(ofp);
-	for (i=l;i<=u;i++) if (nall[i][6]) fprintf(loc,"\n%.3f", (inloc ? sloc[i]/*-sloc[l]+1*/ : (double) i-l+1));
+	for (i=l;i<=u;i++) if (nall[i][6]) fprintf(loc,"\n%.3f", (inloc ? sloc[i]/*-sloc[l]+1*/ : (double) i-l+1) / unit);
 	fclose(loc);
 
 	for (i=1, sn=0, pwd=0, ns=0; i<=lseq; i++) if (nall[i][6]) {
@@ -277,6 +278,7 @@ void print_help(int argc, char* argv[])
 				printf("-sites <int> <int>   Only print sites between these two values: default=all\n");
 				printf("-nout <int>          Number of sequences to output: default=all\n");
 				printf("-prefix <string>     Prefix of output files\n");
+				printf("-unit <float>        Location unit: default=1 bp (use 1000 for locations in kB)\n");
 				printf("\n\n");	
 				exit(0);
 			}
