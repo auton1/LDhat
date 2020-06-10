@@ -50,7 +50,7 @@ main (int argc, char *argv[]) {
 			if(strcmp(in_str, "-nout") == 0) nout = atoi(argv[i+1]);
 			if(strcmp(in_str, "-2only") == 0) fl=2;
 			if(strcmp(in_str, "-prefix") == 0) strcpy(prefix, argv[i+1]);
-			if(strcmp(in_str, "-unit") == 0) unit = atoi(argv[i+1]);
+			if(strcmp(in_str, "-unit") == 0) unit = atof(argv[i+1]);
 		}
 	}
 	if (ifp == NULL)
