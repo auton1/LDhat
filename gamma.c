@@ -3,8 +3,7 @@
 #include "tools.h"
 /*#include "nrutil.h"*/
 
-double gammln(xx)
-double xx;
+double gammln(double xx)
 {
 	double x,tmp,ser;
 	static double cof[6]={76.18009173,-86.50532033,24.01409822,
@@ -23,14 +22,11 @@ double xx;
 }
 
 
-void gcf(gammcf,a,x,gln)
-double a,x,*gammcf,*gln;
+void gcf(double *gammcf, double a, double x, double *gln)
 {
 	int n;
 	double gold=0.0,g,fac=1.0,b1=1.0;
 	double b0=0.0,anf,ana,an,a1,a0=1.0;
-	double gammln();
-	void nrerror();
 
 	*gln=gammln(a);
 	a1=x;
@@ -56,13 +52,10 @@ double a,x,*gammcf,*gln;
 }
 
 
-void gser(gamser,a,x,gln)
-double a,x,*gamser,*gln;
+void gser(double *gamser, double a, double x, double *gln)
 {
 	int n;
 	double sum,del,ap;
-	double gammln();
-	void nrerror();
 
 	*gln=gammln(a);
 	if (x <= 0.0) {
@@ -87,11 +80,9 @@ double a,x,*gamser,*gln;
 }
 
 
-double gammp(a,x)
-double a,x;
+double gammp(double a, double x)
 {
 	double gamser,gammcf,gln;
-	void gser(),gcf(),nrerror();
 
 	if (x < 0.0 || a <= 0.0) nrerror("Invalid arguments in routine GAMMP");
 	if (x < (a+1.0)) {
@@ -103,11 +94,9 @@ double a,x;
 	}
 }
 
-double gammq(a,x)
-double a,x;
+double gammq(double a, double x)
 {
 	double gamser,gammcf,gln;
-	void gcf(),gser(),nrerror();
 
 	if (x < 0.0 || a <= 0.0) nrerror("Invalid arguments in routine GAMMQ");
 	if (x < (a+1.0)) {
@@ -119,8 +108,7 @@ double a,x;
 	}
 }
 
-double rgamm(a) 
-double a;
+double rgamm(double a)
 {
 
 	int i;
@@ -138,4 +126,4 @@ double a;
 	return (double) x[1]/a;
 }
 
-	
+

@@ -6,7 +6,7 @@
 #include <vector>
 #include <math.h>
 
-using namespace std;
+using std::vector;
 #include "params.h"
 #include "rhomap_tools.h"
 #include "hotspot.h"

@@ -6,7 +6,7 @@
 #include <math.h>
 #include <time.h>
 
-using namespace std;
+using std::string;
 
 #include "MCMC.h"
 #include "data.h"

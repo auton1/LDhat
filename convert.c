@@ -8,7 +8,7 @@ void print_help(int argc, char* argv[]);
 long *idum;
 int sizeofpset;
 
-main (int argc, char *argv[]) {
+int main (int argc, char *argv[]) {
 	int i, j, **seqs, **nall, l, u, fall=1, *fsnp, site, hd, nth, jmin, nout=0, *seq_out_list, out_ct;
 	int nseq, nmin, lseq, fl=1, na, psite;
 
@@ -191,7 +191,7 @@ main (int argc, char *argv[]) {
 
 	for (i=1;i<=nseq;i++) if (seq_out_list[i]) 
 	{
-		fprintf(ofp,"\n>%s\n",seqnames[i]);
+		fprintf(ofp,"\n>%s\n",seqnames[i]+1);
 		for (j=l,na=0;j<=u;j++) if (nall[j][6]) 
 		{
 			if (hd==2) 

@@ -3,10 +3,7 @@
 #include "ldhat.h"
 
 
-int read_fasta(seqs,ifp,nseq,lseq,seqnames) 
-int **seqs, nseq, lseq;
-char **seqnames;
-FILE *ifp;
+int read_fasta(int **seqs, FILE *ifp, int nseq, int lseq, char **seqnames)
 {
 	int i, site, seq=0, cts[5];
 	char line[MAXLINE+1], *c, bases[5]="TCAG-";
@@ -21,13 +18,14 @@ FILE *ifp;
 		{
 			seq++;
 			printf("Sequence :%3i ", seq);
-			strncpy(seqnames[seq], (c+1), MAXNAME);
-			for (i=1;i<=MAXNAME;i++) 
+			strncpy(seqnames[seq]+1, (c+1), MAXNAME);
+			seqnames[seq][MAXNAME+1]='\0';
+			for (i=1;i<=MAXNAME;i++)
 			{
 				if ((seqnames[seq][i]=='\n') || (seqnames[seq][i]=='\r'))
 					seqnames[seq][i]='\0';
 			}
-			printf("%s: ", seqnames[seq]);
+			printf("%s: ", seqnames[seq]+1);
 			site=1;
 			for (i=0;i<5;i++) cts[i]=0;
 			while (site<=lseq) {
@@ -83,10 +81,8 @@ FILE *ifp;
 
 
 
-void allele_count(seqs,nseq,lseq,nall,fl,hd,prefix) 
-int **seqs,nseq,lseq,**nall, fl, hd;
-char *prefix;
-{      
+void allele_count(int **seqs, int nseq, int lseq, int **nall, int fl, int hd, char *prefix)
+{
 	int seq, site, i, ct;
 	char filename[MAXNAME+1];
 	FILE *ofp;
@@ -123,8 +119,7 @@ char *prefix;
 	}
 }
 
-double watterson(n) 
-int n;
+double watterson(int n)
 {
 
 	int i;
@@ -134,9 +129,8 @@ int n;
 	return cump;
 }
 
-int check22(s1,s2,nall) 
-int s1,s2,**nall;
-{                      
+int check22(int s1, int s2, int **nall)
+{
         int i, na;
 
 /*Commenting out this line allows the use of missing data*/
@@ -153,10 +147,7 @@ int s1,s2,**nall;
 
 
 /* Routine to classify each pairwise comparison*/
-struct site_type ** pair_spectrum(seqs,data,nall,pset,npt,pnew,miss,anc,pij) 
-int **seqs,**nall,*npt,*pnew,anc,**pij,*miss;
-struct data_sum *data;
-struct site_type **pset;
+struct site_type ** pair_spectrum(int **seqs, struct data_sum *data, int **nall, struct site_type **pset, int *npt, int *pnew, int *miss, int anc, int **pij)
 {
 
 /* pt and type (haploid)
@@ -269,10 +260,7 @@ pt and type (diploid)
 
 /*Routine to add new pair type to existing set*/
 
-int add_type(pset,cpt,ntc,pnew,miss,data) 
-int *cpt,*ntc,*pnew, *miss;
-struct site_type **pset;
-struct data_sum *data;
+int add_type(struct site_type **pset, int *cpt, int *ntc, int *pnew, int *miss, struct data_sum *data)
 {
 
 	int t, fl, i, nstate=9, startp=1;
@@ -310,7 +298,7 @@ struct data_sum *data;
 	if (fl) {/*Missing data*/
 		(*miss)++; pset[t]->miss=1;
 		if (DEBUG) {
-			printf("\nMissing data: ",*(miss));
+			printf("\nMissing data: %i",*(miss));
 			for (i=0;i<nstate;i++) printf("|%3i|",cpt[i]);
 		}
 	}
@@ -319,10 +307,7 @@ struct data_sum *data;
 }
 
 
-void print_pairs(ofp,pset,nt,hd,nseq) 
-int nt,hd,nseq;
-FILE *ofp;
-struct site_type **pset;
+void print_pairs(FILE *ofp, struct site_type **pset, int nt, int hd, int nseq)
 {
 
 	int t, i, nstate, ct;
@@ -360,8 +345,7 @@ struct site_type **pset;
 ??: 8
 */
 
-int * order_pt_hap(pt,nseq) 
-int *pt, nseq;
+int * order_pt_hap(int *pt, int nseq)
 {
 	int fl=0;
 
@@ -428,8 +412,7 @@ pt and type (diploid)
 10_10:15
 */
 
-int * order_pt_dip(pt,nseq)
-     int *pt, nseq;
+int * order_pt_dip(int *pt, int nseq)
 {
   int fl=0;
 
@@ -482,9 +465,7 @@ int * order_pt_dip(pt,nseq)
 
 
 
-void type_print(pij,lseq,w,ofp) 
-int **pij, lseq,w;
-FILE *ofp;
+void type_print(int **pij, int lseq, int w, FILE *ofp)
 {
 	int i, j;
 	if (!ofp) nrerror("No file to print to");
@@ -501,11 +482,7 @@ FILE *ofp;
 
 
 
-void read_pt(ifp,pset,npt,data) 
-int *npt;
-FILE *ifp;
-struct site_type **pset;
-struct data_sum *data;
+void read_pt(FILE *ifp, struct site_type **pset, int *npt, struct data_sum *data)
 {
 
 	int p=1, i;
@@ -541,11 +518,7 @@ struct data_sum *data;
 
 
 
-struct site_type ** init_pset(pset,lkf,ifp,npt,data) 
-int lkf, *npt;
-FILE *ifp;
-struct site_type **pset;
-struct data_sum *data;
+struct site_type ** init_pset(struct site_type **pset, int lkf, FILE *ifp, int *npt, struct data_sum *data)
 {
 	int i, j, nsfile;
 	struct site_type *new_pt;
@@ -579,8 +552,7 @@ struct data_sum *data;
 
 
 
-struct site_type ** add_pset(pset) 
-struct site_type **pset;
+struct site_type ** add_pset(struct site_type **pset)
 {
 	int i, j;
 	extern int sizeofpset;
@@ -607,10 +579,7 @@ struct site_type **pset;
 
 
 
-void read_pars(ifp,tcat,theta,rcat,rmax) 
-int *tcat, *rcat;
-double *theta, *rmax;
-FILE *ifp;
+void read_pars(FILE *ifp, int *tcat, double *theta, int *rcat, double *rmax)
 {
 	int ns, npt;
 
@@ -622,10 +591,7 @@ FILE *ifp;
 }
 
 
-void read_lk(ifp,lkmat,npt,tcat,rcat) 
-int npt, tcat, rcat;
-double **lkmat;
-FILE *ifp;
+void read_lk(FILE *ifp, double **lkmat, int npt, int tcat, int rcat)
 {
 	int p=1, k;
 	char c;

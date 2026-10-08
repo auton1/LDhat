@@ -15,7 +15,7 @@
 #define NRUN 1000000 /*Number of proposals in IS estimation of coalescent likelihoods*/
 #define ADD 10000 /*Size of extra PTs to be added when more memory needed*/
 #define SEQ_MAX 1000/*Max number of sequences*/
-#define MAXNAME 65535 /*Max length of sequences names*/
+#define MAXNAME 255 /*Max length of sequences names*/
 #define MAXLINE 65535 /*Max length of line*/
 #define MAXW 50 /*MAXW*2 = Max number of SNPs to consider for likelihood - i.e. ignore SNPS > MAXW apart*/
 #define BURNIN 100000
@@ -84,50 +84,51 @@ struct block {
   struct block *bpl;/*Pointer to LH block*/
 };
 
-void rec_test();
-void ld_calc();
-void lk_est();
-void print_lks();
-void lk_surf();
-int lk_calc();
+void rec_test(struct data_sum *data, int **pij, double *locs, double **lkmat, struct site_type **pset, int npt);
+void ld_calc(struct site_type **pset, int **pijs, double *locs, double ldv[3], struct data_sum *data);
+void lk_est(struct site_type **pset, int npt, int pnew, double **lkmat, double stheta, int rcat, double rmax);
+void lk_surf(struct site_type **pset, int **pij, struct data_sum *data, double **lkmat, double theta, double *locs, int ff);
+int lk_calc(int **pij, int l, int u, struct data_sum *data, double *lkrun, double *locs, double ct, double **lkmat);
 
-int lk_calc_win();
+int lk_calc_win(int **pij, int l, int u, struct data_sum *data, double *lkrun, double *locs, double rw, double rb, double **lkmat);
+/* print_par, print_lkres, ld_test, ld_calc2: declared but never defined or called anywhere in the codebase - left as-is */
 void print_par();
 void print_lkres();
 void ld_test();
 void ld_calc2();
-void check_exhaustive();
-void lk_miss();
-void lk_resolve();
-void lk_win();
-int lk_calc_site();
-void freq_min();
-void calc_nless1();
+void check_exhaustive(struct site_type **pset, int npt, int nsamp);
+void lk_miss(struct site_type *pset, double *lkmiss, double **lkmat, struct data_sum *data);
+void lk_resolve(double *lkres, struct site_type *pset, double *lknew, double **lkmat, struct data_sum *data);
+void lk_win(struct site_type **pset, int **pij, struct data_sum *data, double **lkmat, double *locs, int **nall);
+int lk_calc_site(double **lij, int rl, int ru, int **pij, struct data_sum *data, double *dlk, double **lkmat, int update);
+void freq_min(double *locs, int *flocs, int **nall, struct data_sum *data);
+void calc_nless1(int nseq0, int nlessi, double **lkmat, double **lkmatn, int rcat);
 
 
 /*Routine for coalescent estimation of likelihoods - from Paul Fearnhead*/
-void pairs();
+void pairs(int nd_store, int *data, int K, double **P, double *mu, double theta[2], double rho_max, int n_pts, int nrun, double *log_lik);
 
 
 /*Routines in MCMC block part*/
-void lk_block();
-void print_block();
-void block2map();
-void print_rmap();
-struct block **update_blocks();
-void check_blocks();
-void update_lij();
-void print_rates();
-void print_bounds();
-void check_lk();
+void lk_block(struct site_type **pset, int **pij, struct data_sum *data, double **lkmat, double *loc, int verb);
+void print_block(struct block *block0);
+void block2map(struct block *block0, double *rmap, double *loc, int u);
+void print_rmap(double *rmap, int nsnp, double *loc);
+struct block **update_blocks(double pr[4], struct block **blockp, int *nblock, double *loc, double lk[2], int nacc[4][2], struct data_sum *data, double **lkmat, int **pij, double **lij);
+void check_blocks(struct block *block0, double *rmap, double *loc);
+void update_lij(double **lij, int rl, int ru, struct data_sum *data, int update);
+void print_rates(struct block *block0, FILE *ofp);
+void print_bounds(struct block *block0, FILE *ofp);
+void check_lk(double **lij, double lk, int lseq, int w);
 
 /*Extra routines in pairdip*/
-void fit_pwlk();
-void rec_test();
-void rmin();
-int rec_event();
-void wakeley_est();
-double C_equation();
+void fit_pwlk(struct data_sum *data, int **pij, double *locs, double **lkmat, int fl);
+void rmin(struct data_sum *data, struct site_type **pset, int **pij, double *locs, int print_flag);
+int rec_event(struct site_type *ptype, int hd);
+void wakeley_est(struct data_sum *data, int **seqs, double *locs);
+double C_equation(double C, double cons[3]);
+
+/* print_lks: signature differs per program (lkgen.c vs pairdip.c/pair_int.c) - declared locally in each .c file instead of here */
 
 
 

@@ -8,6 +8,7 @@ double *lnfac_array;
 
 
 void print_help(int argc, char* argv[]);
+void print_lks(struct site_type **pset, struct data_sum *data, int npt, double **lkmat);
 
 
 int main (int argc, char *argv[])
@@ -223,9 +224,7 @@ int main (int argc, char *argv[])
 
 /*Check that likelihood file is exhaustive for n*/
 
-void check_exhaustive(pset,npt,nsamp)
-     struct site_type **pset;
-     int npt, nsamp;
+void check_exhaustive(struct site_type **pset, int npt, int nsamp)
 {
   int p1, p2, i, ei;
 
@@ -248,12 +247,7 @@ void check_exhaustive(pset,npt,nsamp)
 
 
 
-void print_lks(pset,data,npt,lkmat) 
-int npt;
-double **lkmat;
-struct site_type **pset;
-
-struct data_sum *data;
+void print_lks(struct site_type **pset, struct data_sum *data, int npt, double **lkmat)
 {
 	int p, i, nstate, ct=0;
 	char filename[MAXNAME];
@@ -290,10 +284,7 @@ NB in previous version rmap was per interval, for the block routine it is cumula
 
 */
 
-int lk_calc_site(lij, rl, ru, pij, data, dlk, lkmat, update) 
-int **pij, rl, ru, update;
-double *dlk, **lkmat, **lij;
-struct data_sum *data;
+int lk_calc_site(double **lij, int rl, int ru, int **pij, struct data_sum *data, double *dlk, double **lkmat, int update)
 {
 
 	int i, j, k, t, fl=1, ct=0;
@@ -357,13 +348,7 @@ struct data_sum *data;
 }
 
 
-void lk_block(pset,pij,data,lkmat,loc, verb)
-int **pij;
-double *loc;
-double **lkmat;
-struct site_type **pset;
-struct data_sum *data;
-int verb;
+void lk_block(struct site_type **pset, int **pij, struct data_sum *data, double **lkmat, double *loc, int verb)
 {
 	int i, j, run, nblock, nacc[4][2];
 	double rt, bptrue;
@@ -510,13 +495,7 @@ int verb;
 }
 
 
-struct block ** update_blocks(pr,blockp,nblock,loc,lk,nacc,data,lkmat,pij,lij)
-     struct block **blockp;
-     int *nblock, nacc[4][2], **pij;
-     double *loc;
-     double pr[4];
-	 double **lkmat, **lij, lk[2];
-	 struct data_sum *data;
+struct block ** update_blocks(double pr[4], struct block **blockp, int *nblock, double *loc, double lk[2], int nacc[4][2], struct data_sum *data, double **lkmat, int **pij, double **lij)
 {
 
   int i, j, split, fl;
@@ -749,8 +728,8 @@ struct block ** update_blocks(pr,blockp,nblock,loc,lk,nacc,data,lkmat,pij,lij)
 	if (blockp[i]->rate > rl && blockp[i]->rate <ru) {
 	  blockp[j]->rate = (or*(ll+lr)-blockp[i]->rate*ll)/lr; 
 	  jcb = (double) pow(blockp[i]->rate+blockp[j]->rate,2)/or;  /*for geometric proposal*/
-/*	  jcb = (double) (ll+lr)/lr*(1-exp(-or*(ll+lr)/ll))/exp(-blockp[i]->rate); /*For exponential prior update*/
-/*	  jcb = (double) or*(ll+lr)*(ll+lr)/(ll*lr); /*Jacobian for linear choice*/
+/*	  jcb = (double) (ll+lr)/lr*(1-exp(-or*(ll+lr)/ll))/exp(-blockp[i]->rate); For exponential prior update */
+/*	  jcb = (double) or*(ll+lr)*(ll+lr)/(ll*lr); Jacobian for linear choice */
 	  fl=1;
 	}
 	else fl=0;  /*fl checks whether new value is compatible - simple rejection if not*/
@@ -823,8 +802,8 @@ struct block ** update_blocks(pr,blockp,nblock,loc,lk,nacc,data,lkmat,pij,lij)
 	  lr = (double) loc[obp->pos+obp->size]-loc[obp->pos];
 	  ll = (double) loc[obp->pos]-loc[blockp[i]->pos];
 	  jcb = (double) pow(or+obp->rate,2)/blockp[i]->rate;
-/*	  jcb = blockp[i]->rate*(ll+lr)*(ll+lr)/(ll*lr);/*For linear upwards proposal*/
-/*	  jcb = (ll+lr)/(lr)*(1-exp(-blockp[i]->rate*(ll+lr)/ll))/exp(-or);/*For expontial prior upwards proposal*/
+/*	  jcb = blockp[i]->rate*(ll+lr)*(ll+lr)/(ll*lr); For linear upwards proposal */
+/*	  jcb = (ll+lr)/(lr)*(1-exp(-blockp[i]->rate*(ll+lr)/ll))/exp(-or); For expontial prior upwards proposal */
 
 
 /*Acceptnce on likelihood, rates and block penalty*/
@@ -858,8 +837,7 @@ struct block ** update_blocks(pr,blockp,nblock,loc,lk,nacc,data,lkmat,pij,lij)
 
 /*Routine to print blocks*/
 
-void print_block(block0)
-     struct block *block0;
+void print_block(struct block *block0)
 {
   static int ct;
 
@@ -872,11 +850,7 @@ void print_block(block0)
 
 /*Routine to convert blocks to recombination map*/
 
-void block2map(block0,rmap,loc,u)
-     struct block *block0; /*Pointer to block at which to start update*/
-     double *rmap; /*Cumulative genetic map*/
-     double *loc; /*List of SNP positions*/
-     int u;/*SNP to finish updating at*/
+void block2map(struct block *block0, double *rmap, double *loc, int u)
 {
   int i, usnp;
 
@@ -889,10 +863,7 @@ void block2map(block0,rmap,loc,u)
 
 /*Routine to print out recombination map*/
 
-void print_rmap(rmap,nsnp,loc)
-     double *loc;
-     double *rmap;
-     int nsnp;
+void print_rmap(double *rmap, int nsnp, double *loc)
 {
   int i;
 
@@ -902,10 +873,7 @@ void print_rmap(rmap,nsnp,loc)
 
 
 
-void check_blocks(block0,rmap,loc)
-struct block *block0;
-double *loc;
-double *rmap;
+void check_blocks(struct block *block0, double *rmap, double *loc)
 {
 	int i;
 
@@ -923,10 +891,7 @@ double *rmap;
 }
 
 
-void update_lij(lij,rl,ru,data,update)
-double **lij;
-int rl, ru, update;
-struct data_sum *data;
+void update_lij(double **lij, int rl, int ru, struct data_sum *data, int update)
 {
 	int i, j;
 
@@ -952,9 +917,7 @@ struct data_sum *data;
 	*/
 }
 
-void print_rates(block0,ofp)
-struct block *block0;
-FILE *ofp;
+void print_rates(struct block *block0, FILE *ofp)
 {
 	int i;
 	for (i=1;i<=block0->size;i++) fprintf(ofp,"%8.6f\t",block0->rate);
@@ -963,9 +926,7 @@ FILE *ofp;
 }
 
 
-void print_bounds(block0,ofp)
-struct block *block0;
-FILE *ofp;
+void print_bounds(struct block *block0, FILE *ofp)
 {
 	int i;
 
@@ -976,9 +937,7 @@ FILE *ofp;
 }
 
 
-void check_lk(lij,lk,lseq,w)
-double **lij, lk;
-int lseq, w;
+void check_lk(double **lij, double lk, int lseq, int w)
 {
 	int i, j;
 	double lkc=0.0;
@@ -990,10 +949,7 @@ int lseq, w;
 
 
 /*Calculate likelihoods for diploid data*/
-void lk_resolve(lkres,pset,lknew,lkmat,data)
-     struct site_type *pset;
-     struct data_sum *data;
-     double *lkres,**lkmat, *lknew;
+void lk_resolve(double *lkres, struct site_type *pset, double *lknew, double **lkmat, struct data_sum *data)
 {
   int i, j, fl, pbase[9], p1, p2, hap;
   double mn;
@@ -1046,10 +1002,7 @@ void lk_resolve(lkres,pset,lknew,lkmat,data)
 
 
 /*Calculate likelihoods for missing data*/
-void lk_miss(pset,lkmiss,lkmat,data)
-		struct site_type *pset;
-		struct data_sum *data;
-		double **lkmat, *lkmiss;
+void lk_miss(struct site_type *pset, double *lkmiss, double **lkmat, struct data_sum *data)
 {
   int j, a, b, c, d, e1, e2, e3, e4, pres[9], p1, p2, ct, k, ht;
   double cf, mn;

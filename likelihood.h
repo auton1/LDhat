@@ -4,7 +4,10 @@
 #include <string>
 #include <math.h>
 
-using namespace std;
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::string;
 
 #include "data.h"
 #include "compLK.h"

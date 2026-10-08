@@ -1,0 +1,14 @@
+# Build artifacts
+*.o
+/convert
+/pairwise
+/interval
+/lkgen
+/complete
+/stat
+/fin
+/rhomap
+
+# Stray runtime artifact observed during testing; not written by any
+# LDhat program under this name, but harmless to ignore if it reappears.
+.seed

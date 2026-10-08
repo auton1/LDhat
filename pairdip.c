@@ -8,8 +8,9 @@ double *lnfac_array;
 int sizeofpset=100;
 
 void print_help(int argc, char *argv[]);
+void print_lks(struct site_type **pset, struct data_sum *data, int npt, double **lkmat);
 
-main (int argc, char *argv[]) {
+int main (int argc, char *argv[]) {
 
 	int i, j, **seqs, **nall, ord=1, ns, **pij, lkf=0, npt=0, pnew=0, anc=0;
 	int tcat=1, rcat=0, verb=1, miss=0, *flocs;
@@ -313,10 +314,7 @@ main (int argc, char *argv[]) {
 }
 
 
-void freq_min(locs, flocs, nall, data)
-     int *flocs, **nall;
-     double *locs;
-     struct data_sum *data;
+void freq_min(double *locs, int *flocs, int **nall, struct data_sum *data)
 {
   int i, j, fm, del=0;
 
@@ -341,12 +339,7 @@ void freq_min(locs, flocs, nall, data)
 
 
 /*Sliding windows version of same program*/
-void lk_win(pset,pij,data,lkmat,locs,nall)
-     struct site_type **pset;
-     int **pij, **nall;
-     double *locs;
-	 double **lkmat;
-     struct data_sum *data;
+void lk_win(struct site_type **pset, int **pij, struct data_sum *data, double **lkmat, double *locs, int **nall)
 {
   int win, nwin, lwin, i, j, l, u, cat, nmin;
   double rhoe, rhoi, tc[8], avpwd;
@@ -407,10 +400,7 @@ void lk_win(pset,pij,data,lkmat,locs,nall)
 }
 
 /*Calculate likelihoods for diploid data*/
-void lk_resolve(lkres,pset,lknew,lkmat,data)
-     struct site_type *pset;
-     struct data_sum *data;
-     double *lkres,**lkmat, *lknew;
+void lk_resolve(double *lkres, struct site_type *pset, double *lknew, double **lkmat, struct data_sum *data)
 {
   int i, j, fl, pbase[9], p1, p2, hap;
   double mn;
@@ -459,10 +449,7 @@ void lk_resolve(lkres,pset,lknew,lkmat,data)
 
 /*Calculate likelihoods for missing data*/
 
-void lk_miss(pset,lkmiss,lkmat,data)
-		struct site_type *pset;
-		struct data_sum *data;
-		double **lkmat, *lkmiss;
+void lk_miss(struct site_type *pset, double *lkmiss, double **lkmat, struct data_sum *data)
 {
 
   int j, a, b, c, d, e1, e2, e3, e4, pres[9], p1, p2, ct, k, ht;
@@ -512,9 +499,7 @@ void lk_miss(pset,lkmiss,lkmat,data)
 
 /*Check that likelihood file is exhaustive for n*/
 
-void check_exhaustive(pset,npt,nsamp)
-     struct site_type **pset;
-     int npt, nsamp;
+void check_exhaustive(struct site_type **pset, int npt, int nsamp)
 {
   int p1, p2, i, ei;
 
@@ -538,12 +523,7 @@ void check_exhaustive(pset,npt,nsamp)
 
 /*Likelihood estimation for each pairwise comparison using the method of Fearnhead and Donnelly (2001) */
 
-void lk_est(pset,npt,pnew,lkmat,stheta,rcat,rmax) 
-int npt, pnew, rcat;
-double  stheta, rmax;
-
-double **lkmat;
-struct site_type **pset;
+void lk_est(struct site_type **pset, int npt, int pnew, double **lkmat, double stheta, int rcat, double rmax)
 {
 
 	int i, j, k, p, nd, *data, K;
@@ -589,11 +569,7 @@ struct site_type **pset;
 }	
 
 
-void print_lks(pset,data,npt,lkmat) 
-int npt;
-double **lkmat;
-struct site_type **pset;
-struct data_sum *data;
+void print_lks(struct site_type **pset, struct data_sum *data, int npt, double **lkmat)
 {
 
 	int p, i, nstate, ct=0;
@@ -622,12 +598,7 @@ struct data_sum *data;
 
 
 /*Estimation of the likelihood surface for rho*/
-void lk_surf(pset,pij,data,lkmat,theta,locs, ff) 
-int **pij, ff;
-double theta, *locs;
-double **lkmat;
-struct site_type **pset;
-struct data_sum *data;
+void lk_surf(struct site_type **pset, int **pij, struct data_sum *data, double **lkmat, double theta, double *locs, int ff)
 {
 
 	int i, *pars, fl=0, j, rho_i;
@@ -690,11 +661,7 @@ struct data_sum *data;
 
 /*Routine to calculate the pairwise likelihood for any given rho*/
 
-int lk_calc(pij,l,u,data,lkrun,locs,ct,lkmat) 
-int **pij, l,u;
-double ct, *locs;
-double **lkmat, *lkrun;
-struct data_sum *data;
+int lk_calc(int **pij, int l, int u, struct data_sum *data, double *lkrun, double *locs, double ct, double **lkmat)
 {
 
 	int i, j, k, t, fl=1;
@@ -737,11 +704,7 @@ struct data_sum *data;
 /*Routine to calculate the pairwise likelihood for sliding windows*/
 /*Allows a window (from l to u) with a rate (rw) that is different from background(rb)*/
 
-int lk_calc_win(pij,l,u,data,lkrun,locs,rw,rb,lkmat) 
-int **pij, l,u;
-double  rw, rb, *locs;
-double *lkrun, **lkmat;
-struct data_sum *data;
+int lk_calc_win(int **pij, int l, int u, struct data_sum *data, double *lkrun, double *locs, double rw, double rb, double **lkmat)
 {
 
 	int i, j, k, t, fl=1;
@@ -793,12 +756,7 @@ struct data_sum *data;
 	return fl;
 }
 
-void rec_test(data,pij,locs,lkmat,pset,npt) 
-int **pij, npt;
-double *locs;
-double **lkmat;
-struct data_sum *data;
-struct site_type **pset;
+void rec_test(struct data_sum *data, int **pij, double *locs, double **lkmat, struct site_type **pset, int npt)
 {
 
 	int i, j, **pijs, *ord, ngs[4], shuff, tmp, *pars, imax, l, u, t, k, *anal;
@@ -913,12 +871,7 @@ struct site_type **pset;
 
 
 
-void ld_calc(pset,pijs,locs,ldv, data) 
-int **pijs;
-double *locs;
-double ldv[3];
-struct site_type **pset;
-struct data_sum *data;
+void ld_calc(struct site_type **pset, int **pijs, double *locs, double ldv[3], struct data_sum *data)
 {
 
 	int i, j, pt;
@@ -939,11 +892,7 @@ struct data_sum *data;
 }
 
 
-void fit_pwlk(data,pij,locs,lkmat, fl) 
-int **pij,fl;
-double *locs;
-double **lkmat;
-struct data_sum *data;
+void fit_pwlk(struct data_sum *data, int **pij, double *locs, double **lkmat, int fl)
 {
 	int i, j, t, k;
 	double cij, d, rmp;
@@ -1000,11 +949,7 @@ struct data_sum *data;
 }
 
 
-void rmin(data, pset, pij, locs, print_flag)
-struct data_sum *data;
-struct site_type **pset;
-int **pij, print_flag;
-double *locs;
+void rmin(struct data_sum *data, struct site_type **pset, int **pij, double *locs, int print_flag)
 {
 	int i, j, fl, k, rmin=0, **min_mat;
 	char fname[MAXNAME+1];
@@ -1042,9 +987,7 @@ double *locs;
 
 
 /*Detects wether all 4 gametes present for haploid or diploid data*/
-int rec_event(ptype, hd)
-struct site_type *ptype;
-int hd;
+int rec_event(struct site_type *ptype, int hd)
 {
 	int i, fl=1;
 
@@ -1062,10 +1005,7 @@ int hd;
 }
 
 /*Estimate 4Ner using Wakeley's (1997) moment estimator*/
-void wakeley_est(data, seqs, locs)
-struct data_sum *data;
-int **seqs;
-double *locs;
+void wakeley_est(struct data_sum *data, int **seqs, double *locs)
 {
 	int pos, s1, s2, itrn=0;
 	double pwd, cons[3], x[3], y[3];
@@ -1118,8 +1058,7 @@ double *locs;
 }
 
 
-double C_equation(C, cons)
-double C, cons[3];
+double C_equation(double C, double cons[3])
 {
   double Ia, Ib, gpi, f, S, s97 = (double) sqrt(97.0);
 

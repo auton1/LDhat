@@ -91,39 +91,39 @@ struct control{
 
 #define BACC 1e-6
 
-struct node_tree *** make_tree();
+struct node_tree *** make_tree(struct node_tree ***tree_ptr, struct control *con, int *revts, int **segl);
 
-void set_res();
-void print_lin();
-void  count_rlen();
-void print_nodes();
-void tree_summary();
-double tree_time();
-int add_mut();
-struct node_tree * add_mut_f();
-void seq_mut();
-void print_seqs();
-void print_res();
-void read_input();
-void read_flags();
-void select_base();
-void evolve();
-char num_to_nuc();
-int count_desc();
+void set_res(struct results *res, struct control *con);
+void print_lin(struct node_list **list, int len, int k);
+void  count_rlen(struct node_list *nodel, struct control *con);
+void print_nodes(struct node_tree **tree, int len);
+void tree_summary(struct node_tree ***tree, struct control *con, struct results *res, int **seqs);
+double tree_time(struct node_tree *node);
+int add_mut(struct node_tree **tree, double *fl);
+struct node_tree * add_mut_f(int fsim, struct control *con, double *cf, struct node_tree **tree_site);
+void seq_mut(struct node_tree *nm, int **seqs, int site, int base);
+void print_seqs(int **seqs, struct control *con);
+void print_res(struct results res, struct control con);
+void read_input(struct control *con, int argc, char *argv[]);
+void read_flags(struct control *con, int argc, char *argv[]);
+void select_base(int *nb, int base, double **mut_mat);
+void evolve(struct node_tree *np, int **seqs, struct control *con, double *mm, double **mutmat, int *muts, int site);
+char num_to_nuc(int i);
+int count_desc(struct node_tree *node);
 
-int add_genotype_error();
-int add_bad_sites();
-int add_switch_error();
-int remove_sites_by_frequency();
+int add_genotype_error(int **seqs, struct control *con);
+int add_bad_sites(int **seqs, struct control *con);
+int add_switch_error(int **seqs, struct control *con);
+int remove_sites_by_frequency(int **seqs, struct control *con);
 
-void choose_time();
-double bisect();
-double tgrowth();
+void choose_time(double *t, int k, double rho, struct control *con);
+double bisect(double (*bfunc)(double *, double **), double val, double *cons);
+double tgrowth(double *var, double **cons);
 
-struct node_list ** recombine();
-struct node_list ** coalesce();
+struct node_list ** recombine(int *k, double *rr, struct control *con, struct node_list **list, double *t, FILE *ofp);
+struct node_list ** coalesce(int *k, struct control *con, struct node_list **list, struct node_tree ***tree_ptr, int **segl, double *t, FILE *ofp);
 
-void check_lin();
+void check_lin(struct node_list **list, int *k, struct control *con);
 
 
 #endif

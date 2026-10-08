@@ -17,7 +17,7 @@ int tree_size;
 #define TREEPRINT 0
 #define PHASE 0
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int nmut, nrec, run, i, **segl, site, **seqs;
 	int na_c=0, nac=0, fl=0;
@@ -86,9 +86,7 @@ main(int argc, char *argv[])
 /* Initialise results        */
 /*****************************/
 
-void set_res(res, con)
-struct results *res;
-struct control *con;
+void set_res(struct results *res, struct control *con)
 {
 	int i;
 	res->nm = res->nr = res->sn = res->pwd = res->mhm = 0;
@@ -105,10 +103,7 @@ struct control *con;
 /*The key routine: creates the genealogy*/
 /****************************************/
 
-struct node_tree ***  make_tree(tree_ptr, con, revts, segl) 
-struct node_tree ***tree_ptr;
-struct control *con;
-int *revts, **segl;
+struct node_tree ***  make_tree(struct node_tree ***tree_ptr, struct control *con, int *revts, int **segl)
 {
 	int k, i, j, nrec=0, nco=0, ncb, k_eff, fl, pos;
 	extern int tree_size;
@@ -179,7 +174,7 @@ int *revts, **segl;
 				cump+=(double) -log(ran2())*2/(k*(k-1));
 				if (cump<con->strb) {
 					k--;nco++; ncb++;
-					coalesce(&k,con,list,tree_ptr,segl,&t);
+					coalesce(&k,con,list,tree_ptr,segl,&t,ofp);
 				}
 			}
 			if (DEBUG) printf("\n\nA total of %i coalescent events occurred during the bottlneck leaving %i\n\n",ncb,k);
@@ -217,13 +212,7 @@ int *revts, **segl;
 /* Generate coalescent         */
 /*******************************/
 
-struct node_list ** coalesce(k,con,list,tree_ptr,segl,t,ofp)
-int *k, **segl;
-double *t;
-struct control *con;
-struct node_list **list;
-struct node_tree ***tree_ptr;
-FILE *ofp;
+struct node_list ** coalesce(int *k, struct control *con, struct node_list **list, struct node_tree ***tree_ptr, int **segl, double *t, FILE *ofp)
 {
 	int i, j, pos, node_pos, swap, fl;
 	static int tally=0;
@@ -317,12 +306,7 @@ FILE *ofp;
 /*Genereate recombinant*/
 /***********************/
 
-struct node_list ** recombine(k, rr, con, list, t, ofp) 
-int *k;
-double *t, *rr;
-struct control *con;
-struct node_list **list;
-FILE *ofp;
+struct node_list ** recombine(int *k, double *rr, struct control *con, struct node_list **list, double *t, FILE *ofp)
 {
 
 	int i,j,j0, upper=con->len;
@@ -380,9 +364,7 @@ FILE *ofp;
 /*Prints a list of lineages still active in the genealogy*/
 /*********************************************************/
 
-void print_lin(list, len, k) 
-struct node_list **list;
-int len, k;
+void print_lin(struct node_list **list, int len, int k)
 {
 	int i, j;
 
@@ -401,9 +383,7 @@ int len, k;
 /*Print nodes in tree: useful for checking simulations*/
 /******************************************************/
 
-void print_nodes(tree, len) 
-struct node_tree **tree;
-int len;
+void print_nodes(struct node_tree **tree, int len)
 {
 	int n;
 	extern int tree_size;
@@ -425,9 +405,7 @@ int len;
 /*Calculate potential for recombination*/
 /***************************************/
 
-void count_rlen(nodel, con) 
-struct node_list *nodel;
-struct control *con;
+void count_rlen(struct node_list *nodel, struct control *con)
 {
 	int i;
 
@@ -454,11 +432,7 @@ struct control *con;
 /*Add mutations to tree and calculate summary statistics of sample*/
 /******************************************************************/
 
-void tree_summary(tree, con, res, seqs) 
-int **seqs;
-struct node_tree ***tree;
-struct control *con;
-struct results *res;
+void tree_summary(struct node_tree ***tree, struct control *con, struct results *res, int **seqs)
 {
 
 	int site, mrca, nmuts, i, j, fi, sn;
@@ -779,8 +753,7 @@ int remove_sites_by_frequency(int **seqs, struct control *con)
 /*Routine to find total tree length for each site*/
 /*************************************************/
 
-double tree_time(node) 
-struct node_tree *node;
+double tree_time(struct node_tree *node)
 {
 
 	double ttime=0;
@@ -799,9 +772,7 @@ struct node_tree *node;
 /*Routine to place mutations on the genealogy*/
 /*********************************************/
 
-int add_mut(tree, fl) 
-struct node_tree **tree;
-double *fl;
+int add_mut(struct node_tree **tree, double *fl)
 {
 	int i;
 	static int nn=0;
@@ -833,11 +804,7 @@ double *fl;
 /*fsim is an integer with the MAF                                             */
 /******************************************************************************/
 
-struct node_tree * add_mut_f(fsim, con, cf, tree_site) 
-struct node_tree **tree_site;
-struct control *con;
-double *cf;
-int fsim;
+struct node_tree * add_mut_f(int fsim, struct control *con, double *cf, struct node_tree **tree_site)
 {
 
 	int i, maf;
@@ -881,9 +848,7 @@ int fsim;
 /*Routine to mutate sequences at tips of genealogy*/
 /**************************************************/
 
-void seq_mut(nm, seqs, site, base) 
-struct node_tree *nm;
-int **seqs, base, site;
+void seq_mut(struct node_tree *nm, int **seqs, int site, int base)
 {
 
 	if ((nm->d[0]==NULL) && (nm->d[1]==NULL)) { /*terminal*/
@@ -902,11 +867,7 @@ int **seqs, base, site;
 /*NB: default mutation model is infinite sites.                   */
 /******************************************************************/
 
-void evolve(np, seqs, con, mm, mutmat, muts, site) 
-struct node_tree *np;
-int **seqs, *muts, site;
-struct control *con;
-double *mm, **mutmat;
+void evolve(struct node_tree *np, int **seqs, struct control *con, double *mm, double **mutmat, int *muts, int site)
 {
 
 	int nb, i, j, base;
@@ -953,9 +914,7 @@ double *mm, **mutmat;
 /*locations of segregating sites to file "loc".                  */
 /*****************************************************************/
 
-void print_seqs(seqs, con) 
-int **seqs;
-struct control *con;
+void print_seqs(int **seqs, struct control *con)
 {
 	int i, j, *seg, site, fi, ns;
 	char c;
@@ -1052,9 +1011,7 @@ struct control *con;
 /*Print results to stdout: summaries of data*/
 /********************************************/
 
-void print_res(res, con) 
-struct results res;
-struct control con;
+void print_res(struct results res, struct control con)
 {
 
 	int i;
@@ -1095,8 +1052,7 @@ struct control con;
 /*Convert numerical coding to nucleotides*/
 /*****************************************/
 
-char num_to_nuc(i)
-int i;
+char num_to_nuc(int i)
 {
 	char c;
 	switch (i) {
@@ -1128,10 +1084,7 @@ int i;
 /***********************************************************/
 
 
-void read_input(con, argc, argv) 
-struct control *con;
-int argc;
-char *argv[];
+void read_input(struct control *con, int argc, char *argv[])
 {
 	int i, ss, tl, nmut, freq;	
 	extern long int *idum;
@@ -1300,14 +1253,11 @@ char *argv[];
 /*Read flags from command line*/
 /******************************/
 
-void read_flags(con, argc, argv) 
-struct control *con;
-int argc;
-char *argv[];
+void read_flags(struct control *con, int argc, char *argv[])
 {
 	int i;
 	char *in_str;
-	
+
 	for(i = 0; i < argc; i++)
 	{
 		if(*argv[i] == '-')
@@ -1423,9 +1373,7 @@ char *argv[];
 /*Choose mutation according to user-defined mutation model*/
 /**********************************************************/
 
-void select_base(nb, base, mut_mat) 
-int *nb, base;
-double **mut_mat;
+void select_base(int *nb, int base, double **mut_mat)
 {
 	int i;
 	double cump=0, r1=ran2();
@@ -1440,8 +1388,7 @@ double **mut_mat;
 /*Routine to find number of descendants for a given node*/
 /********************************************************/
 
-int count_desc(node)
-struct node_tree *node;
+int count_desc(struct node_tree *node)
 {
 	int ndesc=0;
 	if (node->d[0] == NULL) ndesc=1;
@@ -1461,10 +1408,7 @@ struct node_tree *node;
 /*Routine to choose time for next coalescent event*/
 /**************************************************/
 
-void choose_time(t, k, rho, con) 
-int k;
-double *t, rho;
-struct control *con;
+void choose_time(double *t, int k, double rho, struct control *con)
 {
   double u=-log(ran2()), cons[3];
 
@@ -1484,8 +1428,7 @@ struct control *con;
 /*Routine to solve monotonic functions by bisection*/
 /***************************************************/
 
-double bisect(bfunc, val, cons) 
-double val, *cons, (*bfunc)(double *, double **);
+double bisect(double (*bfunc)(double *, double **), double val, double *cons)
 {
 
   double x[3], y[3];
@@ -1508,17 +1451,13 @@ double val, *cons, (*bfunc)(double *, double **);
 /*Population growth module*/
 /**************************/
 
-double tgrowth(var, cons) 
-double *var, **cons;
+double tgrowth(double *var, double **cons)
 {
 	return (double) (*cons)[0]*(*var)+(*cons)[1]*(exp((*cons)[2]*(*var))-1);;
 }
 
 
-void check_lin(list, k, con)
-int *k;
-struct node_list **list;
-struct control *con;
+void check_lin(struct node_list **list, int *k, struct control *con)
 {
 	int i;
 

@@ -17,12 +17,7 @@ int tree_size;
 #define FSAMP 10
 
 
-void snp_sim(locs,flocs,pset,lkmat,nrun,data)
-int *flocs, nrun;
-double *locs;
-double **lkmat;
-struct site_type **pset;
-struct data_sum *data;
+void snp_sim(double *locs, int *flocs, struct site_type **pset, double **lkmat, int nrun, struct data_sum *data)
 {
 	int nmut, nrec, run, i, **segl, n5;
 	double rtot, stot, *rho_sim, *clr_sim, *vmin, *vmax;
@@ -121,10 +116,7 @@ struct data_sum *data;
 /*The key routine: creates the genealogy*/
 /****************************************/
 
-struct node **  make_tree(tree_ptr, con, revts, segl) 
-struct node **tree_ptr;
-struct control *con;
-int *revts, **segl;
+struct node **  make_tree(struct node **tree_ptr, struct control *con, int *revts, int **segl)
 {
 
 	int k, i, j, nrec=0, nco=0, ncb;
@@ -224,11 +216,7 @@ int *revts, **segl;
 
 
 
-void coalesce(k,con,list,tree_ptr,segl,t)
-int *k, **segl;
-double *t;
-struct control *con;
-struct node **list, **tree_ptr;
+void coalesce(int *k, struct control *con, struct node **list, struct node **tree_ptr, int **segl, double *t)
 {
 	int i, j, fs;
 
@@ -280,11 +268,7 @@ struct node **list, **tree_ptr;
 /*Genereate recombinant*/
 /***********************/
 
-void recombine(k, rr, con, list, tree_ptr, t) 
-int *k;
-double *t, *rr;
-struct control *con;
-struct node **list, **tree_ptr;
+void recombine(int *k, double *rr, struct control *con, struct node **list, struct node **tree_ptr, double *t)
 {
 
 
@@ -328,9 +312,7 @@ struct node **list, **tree_ptr;
 /*Prints a list of lineages still active in the genealogy*/
 /*********************************************************/
 
-void print_lin(list, len, k) 
-struct node **list;
-int len, k;
+void print_lin(struct node **list, int len, int k)
 {
 
 	int i, j;
@@ -350,9 +332,7 @@ int len, k;
 /*Print nodes in tree: useful for checking simulations*/
 /******************************************************/
 
-void print_nodes(tree, nn, len) 
-struct node **tree;
-int nn, len;
+void print_nodes(struct node **tree, int nn, int len)
 {
 
 	int n, i;
@@ -376,10 +356,7 @@ int nn, len;
 /*Calculate potential for recombination*/
 /***************************************/
 
-void count_rlen(asite, len, rlen, con) 
-int *asite, len;
-double *rlen;
-struct control *con;
+void count_rlen(int *asite, int len, double *rlen, struct control *con)
 {
 
 	int i;
@@ -397,14 +374,7 @@ struct control *con;
 /*Add mutations to tree and calculate summary statistics of sample*/
 /******************************************************************/
 
-void tree_summary(tree, nn, con, segl, data, pset, lkmat, locs, ofp) 
-struct node **tree;
-int nn, **segl, *locs;
-double **lkmat;
-struct control *con;
-struct site_type **pset;
-struct data_sum *data;
-FILE *ofp;
+void tree_summary(struct node **tree, int nn, struct control *con, int **segl, struct data_sum *data, struct site_type **pset, double **lkmat, double *locs, FILE *ofp)
 {
 
 	int site, mrca, nmuts, i, j;
@@ -445,7 +415,7 @@ FILE *ofp;
 
 	pij = imatrix(1,con->len, 1, con->len);
 	nall = imatrix(1,con->len,1,6);
-	allele_count(seqs,con->nsamp,con->len,nall,0,1);
+	allele_count(seqs,con->nsamp,con->len,nall,0,1,data->prefix);
 	pair_spectrum(seqs,data,nall,pset,&(data->ptt),&pnew,&miss,0,pij);
 
 
@@ -471,9 +441,7 @@ FILE *ofp;
 /*Routine to double nodes in tree*/
 /*********************************/
 
-struct node ** add_tree(tree, n_node, len) 
-struct node **tree;
-int n_node, len;
+struct node ** add_tree(struct node **tree, int n_node, int len)
 {
 
 	int i;
@@ -503,9 +471,7 @@ int n_node, len;
 /*Routine to find total tree length for each site*/
 /*************************************************/
 
-double tree_time(node, site) 
-struct node *node;
-int site;
+double tree_time(struct node *node, int site)
 {
 
 	double ttime=0;
@@ -529,10 +495,7 @@ int site;
 /*Routine to place mutations on the genealogy*/
 /*********************************************/
 
-int add_mut(node, site, fl) 
-struct node *node;
-double *fl;
-int site;
+int add_mut(struct node *node, int site, double *fl)
 {
 
 	static int nn=0;
@@ -572,11 +535,7 @@ int site;
 /*Routine to place mutations on the genealogy conditioning on allele frequency*/
 /******************************************************************************/
 
-int add_mut_f(fsim, nnode, nsamp, cf, tree, site, theta) 
-struct node **tree;
-double theta;
-double *cf;
-int nsamp, site, fsim, nnode;
+int add_mut_f(int fsim, int nnode, int nsamp, double *cf, struct node **tree, int site, double theta)
 {
 
 	int i, desc, j=0, fl;
@@ -669,9 +628,7 @@ int nsamp, site, fsim, nnode;
 /*Routine to mutate sequences at tips of genealogy*/
 /**************************************************/
 
-void seq_mut(nm, seqs, nsamp, site, base) 
-struct node *nm;
-int **seqs, nsamp, site, base;
+void seq_mut(struct node *nm, int **seqs, int nsamp, int site, int base)
 {
 
 	if ((nm->d[0]==NULL) && (nm->d[1]==NULL)) {
@@ -693,9 +650,7 @@ int **seqs, nsamp, site, base;
 /*locations of segregating sites to file "loc".                  */
 /*****************************************************************/
 
-void print_seqs(seqs, con) 
-int **seqs;
-struct control *con;
+void print_seqs(int **seqs, struct control *con)
 {
 	char fname[MAXNAME+1];
 	int i, j, *seg, site, fi, ns;
@@ -747,9 +702,7 @@ struct control *con;
 /*Routine to find number of descendants for a given node*/
 /********************************************************/
 
-int count_desc(node, site)
-struct node *node;
-int site;
+int count_desc(struct node *node, int site)
 {
 	int ndesc=0;
 	if ((node->d[0] == NULL) && (node->d[1] == NULL)) ndesc=1;
@@ -768,10 +721,7 @@ int site;
 /*Routine to choose time for next coalescent event*/
 /**************************************************/
 
-void choose_time(t, k, rho, con) 
-int k;
-double *t, rho;
-struct control *con;
+void choose_time(double *t, int k, double rho, struct control *con)
 {
   
   double u=-log(ran2()), cons[3];
@@ -792,8 +742,7 @@ struct control *con;
 /*Routine to solve monotonic functions by bisection*/
 /***************************************************/
 
-double bisect(bfunc, val, cons) 
-double val, *cons, (*bfunc)(double *, double **);
+double bisect(double (*bfunc)(double *, double **), double val, double *cons)
 {
 
   double x[3], y[3];
@@ -816,8 +765,7 @@ double val, *cons, (*bfunc)(double *, double **);
 /*Population growth module*/
 /**************************/
 
-double tgrowth(var, cons) 
-double *var, **cons;
+double tgrowth(double *var, double **cons)
 {
   return (double) (*cons)[0]*(*var)+(*cons)[1]*(exp((*cons)[2]*(*var))-1);;
 }

@@ -5,7 +5,11 @@
 #include <vector>
 #include <string>
 
-using namespace std;
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
 #include "params.h"
 #include "block.h"
 #include "rhomap_tools.h"

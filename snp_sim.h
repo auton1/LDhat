@@ -56,26 +56,26 @@ struct control{
 
 
 
-void snp_sim();
-struct node ** make_tree();
-void print_lin();
-void  count_rlen();
-void print_nodes();
-void tree_summary();
-struct node ** add_tree();
-double tree_time();
-int add_mut();
-int add_mut_f();
-void seq_mut();
-void print_seqs();
-char num_to_nuc();
-int count_desc();
-void choose_time();
-double bisect();
-double tgrowth();
+void snp_sim(double *locs, int *flocs, struct site_type **pset, double **lkmat, int nrun, struct data_sum *data);
+struct node ** make_tree(struct node **tree_ptr, struct control *con, int *revts, int **segl);
+void print_lin(struct node **list, int len, int k);
+void  count_rlen(int *asite, int len, double *rlen, struct control *con);
+void print_nodes(struct node **tree, int nn, int len);
+void tree_summary(struct node **tree, int nn, struct control *con, int **segl, struct data_sum *data, struct site_type **pset, double **lkmat, double *locs, FILE *ofp);
+struct node ** add_tree(struct node **tree, int n_node, int len);
+double tree_time(struct node *node, int site);
+int add_mut(struct node *node, int site, double *fl);
+int add_mut_f(int fsim, int nnode, int nsamp, double *cf, struct node **tree, int site, double theta);
+void seq_mut(struct node *nm, int **seqs, int nsamp, int site, int base);
+void print_seqs(int **seqs, struct control *con);
+char num_to_nuc(); /* declared but never defined or called in this program (only in fin.c under fin.h) - left as-is */
+int count_desc(struct node *node, int site);
+void choose_time(double *t, int k, double rho, struct control *con);
+double bisect(double (*bfunc)(double *, double **), double val, double *cons);
+double tgrowth(double *var, double **cons);
 
-void recombine();
-void coalesce();
+void recombine(int *k, double *rr, struct control *con, struct node **list, struct node **tree_ptr, double *t);
+void coalesce(int *k, struct control *con, struct node **list, struct node **tree_ptr, int **segl, double *t);
 
 #endif
 

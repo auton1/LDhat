@@ -10,8 +10,9 @@
 
 long *idum;
 void print_help(int argc, char *argv[]);
+void sort_farray(double *arr, int n);
 
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
   int nline, ndat, i, j, mid, l95, u95, k, nmiss=0;
   long seed = -setseed();
@@ -147,7 +148,7 @@ main(int argc, char *argv[]) {
   fclose(ofp);
 }
 
-sort_farray(double *arr, int n) {
+void sort_farray(double *arr, int n) {
 
   int pass, i;
   double tmp;

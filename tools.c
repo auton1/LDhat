@@ -2,8 +2,6 @@
 
 void nrerror(const char error_text[])
 {
-	void exit();
-
 	fprintf(stderr,"\n\nRun-time error\n\n");
 	fprintf(stderr,"%s\n",error_text);
 	fprintf(stderr,"\n..now exiting to system...\n");
@@ -12,8 +10,7 @@ void nrerror(const char error_text[])
 
 
 
-int *ivector(nl,nh)
-int nl,nh;
+int *ivector(int nl, int nh)
 {
 	int *v;
 
@@ -22,8 +19,7 @@ int nl,nh;
 	return v-nl;
 }
 
-double *dvector(nl,nh)
-int nl,nh;
+double *dvector(int nl, int nh)
 {
 	double *v;
 
@@ -33,8 +29,7 @@ int nl,nh;
 }
 
 
-double **dmatrix(nrl,nrh,ncl,nch)
-int nrl,nrh,ncl,nch;
+double **dmatrix(int nrl, int nrh, int ncl, int nch)
 {
 	int i;
 	double **m;
@@ -51,8 +46,7 @@ int nrl,nrh,ncl,nch;
 	return m;
 }
 
-int **imatrix(nrl,nrh,ncl,nch)
-int nrl,nrh,ncl,nch;
+int **imatrix(int nrl, int nrh, int ncl, int nch)
 {
 	int i,**m;
 
@@ -68,8 +62,7 @@ int nrl,nrh,ncl,nch;
 	return m;
 }
 
-char **cmatrix(nrl,nrh,ncl,nch)
-int nrl,nrh,ncl,nch;
+char **cmatrix(int nrl, int nrh, int ncl, int nch)
 {
     int i;
 	char **m;
@@ -83,26 +76,21 @@ int nrl,nrh,ncl,nch;
         if (!m[i]) nrerror("allocation failure 2 in cmatrix()");
         m[i] -= ncl;
     }
-    return m; 
+    return m;
 }
 
-void free_ivector(v,nl,nh)
-int *v,nl,nh;
+void free_ivector(int *v, int nl, int nh)
 {
 	free((char*) (v+nl));
 }
 
-void free_dvector(v,nl,nh)
-double *v;
-int nl,nh;
+void free_dvector(double *v, int nl, int nh)
 {
 	free((char*) (v+nl));
 }
 
 
-void free_dmatrix(m,nrl,nrh,ncl,nch)
-double **m;
-int nrl,nrh,ncl,nch;
+void free_dmatrix(double **m, int nrl, int nrh, int ncl, int nch)
 {
 	int i;
 
@@ -110,9 +98,7 @@ int nrl,nrh,ncl,nch;
 	free((char*) (m+nrl));
 }
 
-void free_imatrix(m,nrl,nrh,ncl,nch)
-int **m;
-int nrl,nrh,ncl,nch;
+void free_imatrix(int **m, int nrl, int nrh, int ncl, int nch)
 {
 	int i;
 
@@ -120,49 +106,42 @@ int nrl,nrh,ncl,nch;
 	if ((m+nrl) != NULL) free((char*) (m+nrl));
 }
 
-        
-void free_cmatrix(m,nrl,nrh,ncl,nch)
-char **m;
-int nrl,nrh,ncl,nch;
+
+void free_cmatrix(char **m, int nrl, int nrh, int ncl, int nch)
 {
         int i;
- 
+
         for(i=nrh;i>=nrl;i--) if ((m[i]+ncl) != NULL) free((char*) (m[i]+ncl));
         if ((m+nrl) != NULL) free((char*) (m+nrl));
 }
 
 
 
-int mini(i,j) 
-int i,j;
+int mini(int i, int j)
 {
         if (i<j) return i;
-        else return j; 
+        else return j;
 }
 
-int maxi(i,j) 
-int i,j;
+int maxi(int i, int j)
 {
 	if (i>j) return i;
 	else return j;
 }
 
-double mind(f1, f2)
-     double f1, f2;
+double mind(double f1, double f2)
 {
   if (f1<f2) return f1;
   else return f2;
 }
 
-double maxd(f1, f2)
-     double f1, f2;
+double maxd(double f1, double f2)
 {
   if (f1>f2) return f1;
   else return f2;
 }
 
-double lnfac(i) 
-int i;
+double lnfac(int i)
 {
   int j;
   double cp=0.0;
@@ -172,28 +151,25 @@ int i;
 }
 
 
-double minc(l1,l2,ls) 
-double l1,l2,ls;
+double minc(double l1, double l2, double ls)
 {
         double d;
         if ((d=(l2-l1)) >  (ls*0.5)) d = (double) ls-l2+l1;
-        return d; 
+        return d;
 }
 
 
-void pswap(pt,s1,s2)
-int *pt,s1,s2;
-{     
+void pswap(int *pt, int s1, int s2)
+{
         int tmp;
-        
+
         tmp = pt[s2];
         pt[s2]=pt[s1];
-        pt[s1]=tmp; 
+        pt[s1]=tmp;
 }
 
 
-double lognC2(n,a)
-int n, a;
+double lognC2(int n, int a)
 {
 	int i;
 	double x=0;
@@ -210,8 +186,7 @@ int n, a;
 	return 0;
 }
 
-double lognC4(n,a,b,c,d)
-int n,a,b,c,d;
+double lognC4(int n, int a, int b, int c, int d)
 {
 	int i;
 	double x=0;
@@ -221,7 +196,7 @@ int n,a,b,c,d;
 
 	for (i=a+1;i<=n;i++) x += (double) log(i);
 	for (i=2;i<=b;i++) x -= (double) log(i);
-	for (i=2;i<=c;i++) x -= (double) log(i);	
+	for (i=2;i<=c;i++) x -= (double) log(i);
 	for (i=2;i<=d;i++) x -= (double) log(i);
 
 	if (x>0) return x;
@@ -230,15 +205,13 @@ int n,a,b,c,d;
 }
 
 
-void sort(array, ne)
-double *array;
-int ne;
+void sort(double *array, int ne)
 {
 	int pass, i;
 	double tmp;
 
 	for (pass=1;pass<=ne;pass++)
-		for (i=1;i<ne;i++) 
+		for (i=1;i<ne;i++)
 			if (array[i+1]<array[i]) {
 				tmp = array[i];
 				array[i]=array[i+1];
@@ -291,8 +264,7 @@ double ran2(void) {
 	else return temp;
 }
 
-int rpoiss(x)
-double x;
+int rpoiss(double x)
 {
 
 	int i=0;
@@ -307,6 +279,5 @@ double x;
 	i--;
 	return i;
 }
-
 
 

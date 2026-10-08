@@ -6,8 +6,9 @@ int sizeofpset=100;
 long *idum;
 
 void print_help(int argc, char* argv[]);
+void print_lks(struct site_type **pset, int nseq, int npt, double **lkmat, int tcat, double theta, int rcat, double rmax, char *prefix);
 
-main (int argc, char *argv[]) 
+int main (int argc, char *argv[])
 {
 	int i, npt, tcat=1, verb=0, npmax, nseq, ns=0, rcat;
 	int p1, p2, n11, ct;
@@ -110,9 +111,7 @@ main (int argc, char *argv[])
 
 /*Calculate likelihood file for n-1*/
 
-void calc_nless1(nseq0, nlessi, lkmat, lkmatn, rcat)
-int nseq0, nlessi, rcat;
-double **lkmat, **lkmatn;
+void calc_nless1(int nseq0, int nlessi, double **lkmat, double **lkmatn, int rcat)
 {
 	int i, p1, p2, n11, ptt, ptn, *hap, *hap_aug, nprev;
 	int p1n, p2n;
@@ -173,9 +172,7 @@ double **lkmat, **lkmatn;
 
 
 /*Check that likelihood file is exhaustive for n*/
-void check_exhaustive(pset,npt,nsamp)
-	struct site_type **pset;
-	int npt, nsamp;
+void check_exhaustive(struct site_type **pset, int npt, int nsamp)
 {
 	int p1, p2, i, ei;
 
@@ -207,12 +204,7 @@ void check_exhaustive(pset,npt,nsamp)
 }
 
 
-void print_lks(pset,nseq,npt,lkmat,tcat,theta,rcat,rmax, prefix) 
-int nseq,npt,tcat,rcat;
-double theta, rmax;
-double **lkmat;
-struct site_type **pset;
-char *prefix;
+void print_lks(struct site_type **pset, int nseq, int npt, double **lkmat, int tcat, double theta, int rcat, double rmax, char *prefix)
 {
 	char fname[MAXNAME+1];
 	int p, c1, c2, c3;

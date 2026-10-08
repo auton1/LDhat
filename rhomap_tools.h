@@ -52,16 +52,16 @@ __inline double maxd(double d1, double d2)
 void nrerror(const char error_text[]);
 double lnfac(int i);
 void pswap(int *pt, int s1, int s2);
-double lognC2();
-double lognC4();
-void sort();
-long setseed();
-double ran2();
+double lognC2(int n, int a);
+double lognC4(int n, int a, int b, int c, int d);
+void sort(double *array, int ne);
+long setseed(void);
+double ran2(void);
 
 extern __inline double Add_Log(double Summand1, double Summand2);
 extern __inline double Subtract_Log(double Summand, double subtrahend);
 
-double normrnd();
+double normrnd(void);
 int poissrnd(double xm);
 double gamrnd(double ia, double ib);
 double gammln(double xx);

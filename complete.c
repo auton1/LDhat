@@ -10,7 +10,7 @@ long *idum;
 
 void print_help(int argc, char *argv[]);
 
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	int i,n_pts=0,K,nd, p1, p2, n11, hap[4], ns=0;
 	int *data, hapname[2][4], ct=0;
 	double mu[2]={0.5,0.5}, theta[2]={0.0,0.0}, *log_lik, rho_max, **P;
@@ -30,8 +30,8 @@ main(int argc, char *argv[]) {
 		{
 			in_str = argv[i];
 			if(strcmp(in_str, "-n") == 0) ns = atoi(argv[i + 1]);				/* no. of sequences */
-			/*if(strcmp(in_str, "-lowtheta") == 0) theta[0] = atof(argv[i + 1]);		/* Low Theta */
-			/*if(strcmp(in_str, "-hightheta") == 0) theta[1] = atof(argv[i + 1]);		/* High Theta */
+			/*if(strcmp(in_str, "-lowtheta") == 0) theta[0] = atof(argv[i + 1]);		Low Theta */
+			/*if(strcmp(in_str, "-hightheta") == 0) theta[1] = atof(argv[i + 1]);		High Theta */
 			if(strcmp(in_str, "-theta") == 0) { theta[0] = atof(argv[i + 1]);
 												theta[1] = atof(argv[i + 1]);}		/* Theta */
 			if(strcmp(in_str, "-rhomax") == 0) rho_max = atof(argv[i + 1]);			/* max 4Ner */

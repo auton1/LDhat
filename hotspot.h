@@ -3,7 +3,10 @@
 #pragma warning(disable:4786) 
 #include <vector>
 #include <math.h>
-using namespace std;
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::vector;
 
 #include "rhomap_tools.h"
 
